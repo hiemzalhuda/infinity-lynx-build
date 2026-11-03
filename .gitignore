@@ -1,0 +1,11 @@
+# JANGAN PERNAH commit kunci signing, biner kernel, atau output build.
+vendor/infinity/security/
+security/
+*.bak
+*.orig
+*.log
+*.ko
+boot.img
+dtbo.img
+out/
+.repo/

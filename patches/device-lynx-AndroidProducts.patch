@@ -1,0 +1,11 @@
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index b8d6ff0..c0c156a 100644
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -5,4 +5,5 @@
+ 
+ PRODUCT_MAKEFILES := \
+     $(LOCAL_DIR)/aosp_lynx.mk \
+-    $(LOCAL_DIR)/lineage_lynx.mk
++    $(LOCAL_DIR)/lineage_lynx.mk \
++    $(LOCAL_DIR)/infinity_lynx.mk
