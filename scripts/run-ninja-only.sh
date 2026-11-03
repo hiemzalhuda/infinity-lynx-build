@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH="$HOME/bin:$PATH"
 # Direct ninja on the Kati-regenerated plan (NO Soong, NO mka).
 # Plan verified 2026-11-03 16:01 WIB: bacon edge has OTA input, otapackage + boot.img edges exist.
 cd ~/infinityx || exit 1
