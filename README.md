@@ -28,7 +28,7 @@ device milik Pyrtles (Pyrtle93), maintainer Infinity-X seri Pixel 7
 | `manifest/lynx.xml` | Pin local manifest (4 project, semua `lineage-24.0`). |
 | `patches/` | Patch sumber + skrip `apply-patches.sh` (GMS, AndroidProducts, rename overlay extras). |
 | `scripts/` | Skrip build, Kati-only, direct ninja, dan tuning pasca-reboot. |
-| `docs/` | Prosedur lengkap: sync, kunci, kernel, regenerasi Kati-only, gerbang verifikasi, riwayat build #1–#12. |
+| `docs/` | Prosedur lengkap: sync, kunci, kernel, regenerasi Kati-only, gerbang verifikasi, riwayat build #1–#12, trik build resource terbatas (`docs/07-low-resource-build.md`). |
 
 ## Build ulang, ringkas
 
