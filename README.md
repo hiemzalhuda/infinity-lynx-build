@@ -54,7 +54,9 @@ device milik Pyrtles (Pyrtle93), maintainer Infinity-X seri Pixel 7
 - Header `scripts/build-lynx-lowram.sh` masih tertulis "v4.0" — itu label lama.
   Build yang dihasilkan manifest cabang 17 adalah **4.1**.
 - Komentar `scripts/run-kati-only.sh` masih tertulis "Rev 2", tapi isinya
-  sudah revisi yang berhasil (semua variabel lingkungan yang dibutuhkan ada).
+  sudah revisi yang berhasil (semua variabel lingkungan yang dibutuhkan ada),
+  plus perbaikan 2026-11-05: auto-restore plan basi dihapus (backupnya sudah
+  tidak ada; plan basi tidak boleh dipakai lagi).
 - Skrip-skrip di sini ditulis untuk mesin build `bilalz` (Ubuntu Server 22.04,
   user `hiemz`, tree di `~/infinityx`). Sesuaikan path bila mesinnya beda.
 - ZIP hasil build **tidak** disimpan di repo ini. Hasil build terakhir yang

@@ -2,7 +2,10 @@
 # Kati-only plan regeneration (replica of soong_ui runKatiBuild, WITHOUT Soong).
 # Rev 2: export OUT_DIR + TMPDIR (soong_ui ensures OUT_DIR in ckati env; missing it
 # failed attempt 1 with 'unknown variable: OUT_DIR' at config.mk:34).
-# Stale plan backup already in /data/kati-backup-20261103; restores it on failure.
+# NOTE 2026-11-05: auto-restore REMOVED. Backup /data/kati-backup-20261103 was
+# deleted 2026-11-04, and restoring a stale plan is dangerous (a stale plan
+# caused the 2026-11-03 bacon failure: no boot.img/OTA edges). On ckati
+# failure the script now stops with a clear message and restores nothing.
 cd ~/infinityx || exit 1
 source build/envsetup.sh >/dev/null 2>&1
 lunch infinity_lynx-user >/dev/null 2>&1 || exit 1
@@ -20,6 +23,6 @@ rm -f out/build-infinity_lynx.ninja
 CKATI_EXIT=${PIPESTATUS[0]}
 echo "CKATI_EXIT=$CKATI_EXIT" | tee -a "$LOG"
 if [ "$CKATI_EXIT" -ne 0 ] || [ ! -f out/build-infinity_lynx.ninja ]; then
-  cp /data/kati-backup-20261103/build-infinity_lynx.ninja out/build-infinity_lynx.ninja 2>/dev/null
-  echo "RESTORED stale plan from backup" | tee -a "$LOG"
+  echo "CKATI FAILED - plan NOT restored (stale-plan restore removed 2026-11-05; never reuse a stale plan)" | tee -a "$LOG"
+  exit 1
 fi

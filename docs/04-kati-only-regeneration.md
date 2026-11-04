@@ -40,7 +40,13 @@ tetap berlaku; jangan diam-diam menjalankan mka).
   `HAS_BUILD_NUMBER=false`.
 - `TARGET_DEVICE_DIR=device/google/lynx/lynx` (direktori bersarang —
   BoardConfig.mk ada di `lynx/lynx/`).
-- Skrip membackup plan lama dan **mengembalikannya otomatis bila ckati gagal**.
+- **Tidak ada auto-restore plan.** Versi awal skrip mengembalikan plan
+  lama otomatis bila ckati gagal — perilaku ini **dihapus 2026-11-05**:
+  backup plan lama (`/data/kati-backup-20261103`) sudah dihapus
+  2026-11-04, dan memakai plan basi justru berbahaya (plan basi adalah
+  penyebab kegagalan bacon 2026-11-03: tidak ada edge boot.img/OTA).
+  Bila ckati gagal, skrip berhenti dengan pesan jelas dan tidak
+  mengembalikan apa pun — diagnosis dulu, jangan pakai plan lama.
 
 Catatan: `lunch` memicu `soong_ui --dumpvars-mode` (~5 menit cache dingin,
 ~1–2 menit hangat; berat I/O, bukan analisis Soong penuh, bukan hang).
