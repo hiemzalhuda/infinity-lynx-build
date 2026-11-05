@@ -2,6 +2,7 @@
 export PATH="$HOME/python312/bin:$HOME/bin:$HOME/infinityx/prebuilts/jdk/jdk21/linux-x86/bin:$PATH"
 export LC_ALL=C
 export OUT_DIR=out
+export JAVA_TOOL_OPTIONS="-Xmx3072m -XX:+UseG1GC -XX:+UseStringDeduplication"
 # Direct ninja on the Kati-regenerated plan (NO Soong, NO mka).
 # Plan verified 2026-11-03 16:01 WIB: bacon edge has OTA input, otapackage + boot.img edges exist.
 cd ~/infinityx || exit 1

@@ -56,6 +56,7 @@ kegagalan beruntun membuktikan ini — semuanya bukan salah source:
 | `PATH` lengkap | `env: 'python': No such file or directory` (Ubuntu 22.04 tidak punya `/usr/bin/python`); lalu `java: not found` di metalava/antlr | Symlink `~/bin/python` → `/usr/bin/python3.10`; CPython **3.12.16** standalone di `~/python312` (mterp butuh sintaks f-string Python 3.12+, sistem hanya 3.10); JDK 21 prebuilt tree (`prebuilts/jdk/jdk21/linux-x86/bin`) untuk bare `java` |
 | `LC_ALL=C` | `apkcerts doublecheck` gagal: kedua file apkcerts **5386 baris identik**, hanya urutan beda — Soong pakai urutan byte (Go), sisi Make pakai GNU sort di locale `en_US.UTF-8` | `export LC_ALL=C` di launcher + hapus 3 intermediate apkcerts `*.txt` (regenerable) agar ter-generate ulang |
 | `OUT_DIR=out` | `gen_build_prop.py:291` crash `startswith(None)` di edge product-build.prop | `export OUT_DIR=out` di launcher |
+| `JAVA_TOOL_OPTIONS` dengan `-Xmx` | `java.lang.OutOfMemoryError: Java heap space` di `turbine kapt Launcher3QuickStepLib` (~98,5%) — perintah java turbine tidak membawa `-Xmx`, heap default JVM (~1/4 RAM ≈ 1,9 GiB) tidak cukup | `export JAVA_TOOL_OPTIONS="-Xmx3072m -XX:+UseG1GC -XX:+UseStringDeduplication"` di launcher |
 
 Pelajaran umum: **bila direct ninja gagal dengan "tool tidak ditemukan"
 atau error environment, audit environment launcher dulu** — jangan
@@ -63,12 +64,13 @@ menyalahkan source. Dan jangan pernah percaya `tmux -e` untuk
 menyalurkan PATH; verifikasi environment proses lewat
 `/proc/<pid>/environ`.
 
-Untuk jalur `mka` (bukan direct ninja), kandidat penurun tekanan
-memori yang pernah disiapkan tapi belum sempat dipakai — karena semua
-run terakhir memakai direct ninja — adalah 4 baris ini sebelum `mka`:
-`GOGC=30`, `GOMEMLIMIT=4500MiB`,
-`JAVA_TOOL_OPTIONS="-Xmx3072m -XX:+UseG1GC -XX:+UseStringDeduplication"`,
-`METALAVA_DUMP_ARGV=false`.
+Nilai `JAVA_TOOL_OPTIONS` yang sama (`-Xmx3072m -XX:+UseG1GC
+-XX:+UseStringDeduplication`) awalnya disiapkan sebagai kandidat
+untuk jalur `mka` — tapi justru terbukti dibutuhkan di direct ninja
+setelah kegagalan heap #9 (lihat §6), dan sejak 2026-11-05 sudah
+menjadi baris tetap di `scripts/run-ninja-only.sh`. Tiga baris
+kandidat `mka` lainnya (`GOGC=30`, `GOMEMLIMIT=4500MiB`,
+`METALAVA_DUMP_ARGV=false`) tetap belum pernah dipakai.
 
 ## 4. Plan-load itu sunyi — jangan panik, jangan dibunuh
 
@@ -112,6 +114,21 @@ kompilasi beneran dimulai.
 Keduanya: restart `-j1` dulu. Kalau `-j1` gagal di edge yang sama
 dengan heap error yang sama, itu sinyal **heap cap JVM** (bukan
 paralelisme) — berhenti dan lapor, jangan blind rerun.
+
+Terbukti 2026-11-05 ~10:43 WIB: run `-j1` mati di
+`[33401/33971]` (~98,3%) di edge turbine kapt yang sama dengan
+heap error yang sama — padahal `-j2` sudah gagal di sana 04:14 WIB.
+Perintah java turbine-nya memang tanpa `-Xmx` (cek ekor log:
+`prebuilts/jdk/jdk21/linux-x86/bin/java -XX:OnError=...
+-XX:CICompilerCount=6 ... -jar .../turbine.jar`), jadi heap default
+JVM (~1,9 GiB) yang membatasi, bukan jumlah job. Fix: export
+`JAVA_TOOL_OPTIONS="-Xmx3072m -XX:+UseG1GC
+-XX:+UseStringDeduplication"` di launcher (JVM membaca variabel ini
+saat start; karena command line tidak membawa `-Xmx` sendiri,
+nilai ini yang dipakai) lalu direct ninja lagi. Kalau edge yang
+sama gagal lagi dengan heap error yang sama di `-Xmx3072m`,
+naikkan ke `-Xmx4096m` — RAM 7,7 GiB masih muat untuk satu JVM
+sebesar itu di `-j1`.
 
 ## 7. Disk: yang boleh dihapus, yang tidak boleh, dan trik reserve
 
