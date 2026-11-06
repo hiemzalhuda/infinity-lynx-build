@@ -28,7 +28,7 @@ device milik Pyrtles (Pyrtle93), maintainer Infinity-X seri Pixel 7
 | `manifest/lynx.xml` | Pin local manifest (4 project, semua `lineage-24.0`). |
 | `patches/` | Patch sumber + skrip `apply-patches.sh` (GMS, AndroidProducts, rename overlay extras). |
 | `scripts/` | Skrip build, Kati-only, direct ninja, dan tuning pasca-reboot. |
-| `docs/` | Prosedur lengkap: sync, kunci, kernel, regenerasi Kati-only, gerbang verifikasi, riwayat build #1–#12, trik build resource terbatas (`docs/07-low-resource-build.md`). |
+| `docs/` | Prosedur lengkap: sync, kunci, kernel, regenerasi Kati-only, gerbang verifikasi, riwayat build #1–#12, trik build resource terbatas (`docs/07-low-resource-build.md`), perbaikan DTB hilang (`docs/08-dtb-missing-fix.md`). |
 
 ## Build ulang, ringkas
 
@@ -40,7 +40,8 @@ device milik Pyrtles (Pyrtle93), maintainer Infinity-X seri Pixel 7
 4. Siapkan kunci signing (9 pasang, `docs/02-signing-keys.md`) — **di luar repo** —
    ke `vendor/infinity/security/` dan backup offline ke `~/.android-certs`.
 5. Build kernel dari source dan salin hasilnya (`docs/03-kernel-build.md`) —
-   jangan pernah memakai `.ko` dummy.
+   jangan pernah memakai `.ko` dummy — dan pastikan file `*.dtb` ada di
+   direktori kernel (`docs/08-dtb-missing-fix.md`).
 6. Build: `scripts/build-lynx-lowram.sh` (mka `-j2 bacon`). Bila plan Kati
    sudah basi (mis. boot.img baru muncul setelah plan dibuat), regenerasi
    dengan `scripts/run-kati-only.sh` lalu `scripts/run-ninja-only.sh`

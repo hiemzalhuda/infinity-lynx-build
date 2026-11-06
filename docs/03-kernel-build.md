@@ -25,6 +25,11 @@ jalan pintas itu.
    exit 0). Dist di `/data/kernel-gs61/out/lynx/dist/` (~844 MiB).
 4. Salin ke tree: semua `.ko` (329 file) + `dtbo.img` + `boot.img` (53 MiB)
    ke `device/google/lynx-kernels/6.1/`.
+5. **Pastikan juga ada file `*.dtb` di direktori kernel** — tanpa DTB,
+   `dtb.img` hasil build akan 0 byte dan ROM bootloop (logo 1 detik lalu
+   mati) walau semua gerbang lolos. Build kernel Bazel tidak menghasilkan
+   DTB standalone; ambil DTB dari stock factory image atau ROM lain yang
+   boot — lihat `docs/08-dtb-missing-fix.md`.
 5. **Jangan sentuh** file `.bp`, `.mk`, atau product file, jangan make clean,
    jangan sentuh `out/` selama langkah ini.
 
